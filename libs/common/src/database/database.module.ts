@@ -1,9 +1,15 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/reservation_be'),
+    MongooseModule.forRootAsync({
+      useFactory: (config: ConfigService) => ({
+        uri: config.get('MONGODB_URI'),
+      }),
+      inject: [ConfigService],
+    }),
   ],
 })
 export class DatabaseModule {}
