@@ -3,7 +3,7 @@ import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './users/current-user.decorator';
 import { UserDocument } from './users/models/user.schema';
-import { LocalAuthGuard } from './guards/local-auth.guards';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
