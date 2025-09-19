@@ -11,7 +11,7 @@ services:
       - '3000:3000'
     volumes:
       - .:/usr/src/app
-    mem_limit: 2g
+    mem_limit: 3g
   auth:
     build:
       context: .
@@ -24,6 +24,7 @@ services:
       - '3001:3001'
     volumes:
       - .:/usr/src/app
+    mem_limit: 2g
   payments:
     build:
       context: .
@@ -32,8 +33,17 @@ services:
     command: pnpm run start:dev payments
     env_file:
       - ./apps/payments/.env
-    ports:
-      - '3003:3003'
+    volumes:
+      - .:/usr/src/app
+    mem_limit: 2g
+  notifications:
+    build:
+      context: .
+      dockerfile: ./apps/notifications/Dockerfile
+      target: development
+    command: pnpm run start:dev notifications
+    env_file:
+      - ./apps/notifications/.env
     volumes:
       - .:/usr/src/app
     mem_limit: 2g
