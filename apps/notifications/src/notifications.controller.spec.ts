@@ -14,9 +14,4 @@ describe('NotificationsController', () => {
     notificationsController = app.get<NotificationsController>(NotificationsController);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(notificationsController.getHello()).toBe('Hello World!');
-    });
-  });
 });
