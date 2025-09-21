@@ -1,3 +1,5 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
 steps:
 # Reservations Service
   - name: 'gcr.io/cloud-builders/docker'
