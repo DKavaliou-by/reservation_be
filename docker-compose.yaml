@@ -46,6 +46,5 @@ services:
       - ./apps/notifications/.env
     volumes:
       - .:/usr/src/app
-    mem_limit: 2g
   mongo:
     image: mongo
