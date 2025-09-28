@@ -12,7 +12,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(user: UserDocument, response: Response): Promise<void> {
+  async login(user: UserDocument, response: Response): Promise<string> {
     const tokenPayload: TokenPayload = {
       userId: user._id.toHexString(),
     };
@@ -32,6 +32,7 @@ export class AuthService {
         expires, 
       }
     );
-    response.send(user);
+
+    return token;
   }
 }
