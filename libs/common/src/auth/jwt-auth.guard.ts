@@ -3,16 +3,21 @@ import {
   ExecutionContext,
   Injectable,
   Inject,
+  Logger,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { catchError, map, Observable, of, tap } from "rxjs";
 import { AUTH_SERVICE } from "../constants/services";
 import { ClientProxy } from "@nestjs/microservices";
 import { UserDto } from "@app/common";
+import { Reflector } from "@nestjs/core";
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
+  private readonly logger = new Logger(JwtAuthGuard.name);
   constructor(
     @Inject(AUTH_SERVICE) private readonly authClient: ClientProxy,
+    private readonly reflector: Reflector,
   ) {}
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
@@ -21,15 +26,28 @@ export class JwtAuthGuard implements CanActivate {
     if (!jwt) {
       return false;
     }
-    console.log('jwt', jwt);
+
+    const roles = this.reflector.get<string[]>('roles', context.getHandler());
+
     return this.authClient.send<UserDto>('authenticate', {
       Authentication: jwt,
     }).pipe(
       tap((res) => {
+        if (roles) {
+          for (const role of roles) {
+            if (!res.roles?.includes(role)) {
+              this.logger.error(`User does not have valid role: ${role}`);
+              throw new UnauthorizedException();
+            }
+          }
+        }
         context.switchToHttp().getRequest().user = res;
       }),
       map(() => true),
-      catchError(() => of(false))
+      catchError((err) => {
+        this.logger.error(err);
+        return of(false);
+      })
     );
   }
 } 
