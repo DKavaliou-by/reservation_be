@@ -11,7 +11,6 @@ services:
       - '3000:3000'
     volumes:
       - .:/usr/src/app
-    mem_limit: 3g
   auth:
     build:
       context: .
@@ -24,7 +23,6 @@ services:
       - '3001:3001'
     volumes:
       - .:/usr/src/app
-    mem_limit: 2g
   payments:
     build:
       context: .
@@ -35,7 +33,6 @@ services:
       - ./apps/payments/.env
     volumes:
       - .:/usr/src/app
-    mem_limit: 2g
   notifications:
     build:
       context: .
@@ -54,3 +51,7 @@ services:
       - '3306:3306'
     # volumes:
     #   - mysql-data:/var/lib/mysql
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - '5672:5672'
