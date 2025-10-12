@@ -3,15 +3,24 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UsersRepository } from './users.repository';
 import * as bcrypt from 'bcryptjs';
 import { GetUserDto } from './dto/get-user.dto';
+import { Role, User } from '@app/common';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async create(createUserDto: CreateUserDto) {
-    await this.validateCreatedUserDto(createUserDto)
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-    return this.usersRepository.create({...createUserDto, password: hashedPassword});
+    console.log('Creating user:', createUserDto);
+    await this.validateCreatedUser(createUserDto)
+    const user = new User({
+      ...createUserDto,
+      password: await bcrypt.hash(createUserDto.password, 10),
+      roles: createUserDto.roles?.map(roleDto => new Role(roleDto)),
+    });
+
+    console.log('Created user:', user);
+    return this.usersRepository.create(user);
+    
   }
 
   async verifyUser(email: string, password: string): Promise<any> {
@@ -29,7 +38,7 @@ export class UsersService {
     return this.usersRepository.findOne(getUserDto);
   }
 
-  async validateCreatedUserDto(createUserDto: CreateUserDto) {
+  async validateCreatedUser(createUserDto: CreateUserDto) {
     try {
       await this.usersRepository.findOne({ email: createUserDto.email });
     } catch (error) {
