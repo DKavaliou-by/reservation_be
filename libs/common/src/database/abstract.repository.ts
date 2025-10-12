@@ -1,7 +1,7 @@
 import { FilterQuery, Model, Types, UpdateQuery } from "mongoose";
 import { Logger, NotFoundException } from "@nestjs/common";
 import { AbstractEntity } from "./abstract.entity";
-import { EntityManager, FindOptions, FindOptionsWhere, Repository } from "typeorm";
+import { EntityManager, FindOptions, FindOptionsRelations, FindOptionsWhere, Repository } from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity.js";
 
 export abstract class AbstractRepository<T extends AbstractEntity<T>> {
@@ -20,8 +20,9 @@ export abstract class AbstractRepository<T extends AbstractEntity<T>> {
 
   async findOne(
     where: FindOptionsWhere<T>,
+    relations?: FindOptionsRelations<T>,
   ): Promise<T> {
-    const entity = await this.entityRepository.findOne({ where });
+    const entity = await this.entityRepository.findOne({ where, relations });
     
     if (!entity) {
       this.logger.warn(`Entity was not found with where: ${JSON.stringify(where)}`);

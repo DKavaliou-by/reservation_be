@@ -24,6 +24,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     }),
      ConfigModule.forRoot({
       isGlobal: true,
+      // envFilePath: './apps/auth/.env',
       validationSchema: Joi.object({
         HTTP_PORT: Joi.number().required(),
         TCP_PORT: Joi.number().required(),

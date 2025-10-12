@@ -17,4 +17,9 @@ export class Reservation extends AbstractEntity<Reservation> {
 
   @Column()
   invoiceId: string;
+
+  constructor(obj = {}) {
+    super(obj);
+    Object.assign(this, obj);
+  }
 }

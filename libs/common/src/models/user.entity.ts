@@ -13,4 +13,10 @@ export class User extends AbstractEntity<User> {
   @ManyToMany(() => Role, { cascade: true})
   @JoinTable()
   roles?: Role[];
+
+
+  constructor(obj = {}) {
+    super(obj);
+    Object.assign(this, obj)
+  }
 }
